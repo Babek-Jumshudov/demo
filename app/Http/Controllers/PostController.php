@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Advert;
+use App\Models\CompanyAdd;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,21 +12,19 @@ class PostController extends Controller
 { 
     public function index()
     {
+        $adverts = Advert::all();
         $posts = Post::all();
-
-        return view("home", compact("posts"));
+        $company = CompanyAdd::all();
+        return view("home", compact("posts" , "adverts" , "company"));
     }
-
 
     public function store(Request $request)
     {
         if (Auth::check()) {
-            $user = Auth::user();
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('uploads'), $imageName);
-
                 $user = Auth::user();
                 $post = new Post;
                 $post->image = $imageName;
@@ -36,7 +36,7 @@ class PostController extends Controller
                 return redirect()->back()->with('success', 'Post əlavə olundu !');
             }
 
-            return redirect()->back()->with('error', 'Xəta baş verdi');
+            return redirect()->back()->with('error', 'Şəkil yoxdur!');
 
         } else {
             return redirect()->back()->with('error', 'İstifadəçi hesabı yoxdur!');
@@ -44,8 +44,6 @@ class PostController extends Controller
 
 
     }
-
-
 
     public function edit(Post $post)
     {

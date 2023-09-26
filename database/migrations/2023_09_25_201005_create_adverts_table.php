@@ -11,7 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('adverts', function (Blueprint $table) {
+            $table->id();
+            $table->string("title");
+            $table->unsignedBigInteger("company_id");
+            $table->unsignedBigInteger("user_id");
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('adverts');
     }
 };

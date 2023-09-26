@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -39,7 +40,6 @@ class CustomerController extends Controller
         $credentials = $req->only('email', 'password');
     
         if (Auth::attempt($credentials)) {
-            $user = Auth::user();
             return redirect()->route('home');
         } else {
             return redirect()->route('login')->with('error', 'Email vəya şifrə yanlışdır!');

@@ -187,12 +187,15 @@
                 @csrf
                 <button class="btn btn-warning" type="submit">Log Out</button>
             </form>
+            <a class="btn btn-warning" href='{{ route('companyAdd') }}'>Sirket Add</a>
         @else
             <a href="{{ route('login') }}">Log In</a>
         @endif
 
     </div>
-    <a class="btn btn-success" href='{{ route('post.add') }}'>Post_add</a>
+    <a class="btn btn-success" href='{{ route('post.add') }}'>Post Add</a>
+    <a class="btn btn-danger" href='{{ route('elan.store') }}'>Elan Add</a>
+
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -200,48 +203,70 @@
     @endif
 
     <div class="container">
-        <div class="d-flex gap-3 flex-wrap " style="gap: 10px">
+        <div style="gap: 10px">
             @foreach ($errors->all() as $error)
                 <li class="text-danger">{{ $error }}</li>
             @endforeach
-            @forelse ($posts as $post)
-                <div style="max-width: 240px" class="border border-primary p-1">
-                    <div>
-                        <img src='{{ asset("/uploads/{$post->image}") }}' alt="">
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <p>{{ $post->description }}</p>
-                        <p class="d-flex">Like: {{ $post->like }} <input type="checkbox"></p>
-                    </div>
-                    <div>
-                        Yazar: {{ $post->user->username }}
-                    </div>
-                    <div style="display: flex">
-                        <a class="btn btn-warning mr-3" href="{{ route('post.edit', ['post' => $post->id]) }}">Edit</a>
-                        <form action="{{ route('post.delete', ['post' => $post->id]) }}" method="POST">
+            <div style="display: flex">
+                <h1>Postlar:</h1>
+                @forelse ($posts as $post)
+                    <div style="max-width: 240px" class="border border-primary p-1">
+                        <div>
+                            <img src='{{ asset("/uploads/{$post->image}") }}' alt="">
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <p>{{ $post->description }}</p>
+                            <p class="d-flex">Like: {{ $post->like }} <input type="checkbox"></p>
+                        </div>
+                        <div>
+                            Yazar: {{ $post->user->username }}
+                        </div>
+                        <div style="display: flex">
+                            <a class="btn btn-warning mr-3"
+                                href="{{ route('post.edit', ['post' => $post->id]) }}">Edit</a>
+                            <form action="{{ route('post.delete', ['post' => $post->id]) }}" method="POST">
+                                @csrf
+                                @method('delete')
+                                <button class="btn btn-danger" type="submit">Delete</button>
+                            </form>
+                        </div>
+                        <form method="POST" action="{{ route('comments.store') }}" class="d-flex">
                             @csrf
-                            @method('delete')
-                            <button class="btn btn-danger" type="submit">Delete</button>
+                            <input style="width: 70%; margin-left: 2%; margin-right: 4%; margin-top: 1%;" type="text"
+                                placeholder="Comment.." name="comments">
+                            <input type="submit" value="send" class="btn btn-primary">
+
                         </form>
                     </div>
+                @empty
+                    Post tapılmadı
+                @endforelse
+            </div>
+            <div style="display: flex">
+                <h1>Elanlar:</h1>
+                @forelse ($adverts as $advert)
+                    <div style="max-width: 240px" class="border border-primary p-1">
+                        <div>
+                            <p><b>Elanın adı:</b>{{ $advert->title }}</p>
+                        </div>
+                        <div>
+                            <p><b>Elanın verən Şirkət:</b>
+                                @foreach ($company as $com)
+                                    {{ $com->name }}
+                                @endforeach
+                            </p>
+                        </div>
+                        <div>
+                            <button class="btn btn-warning" type="submit">Muraciyyet et</button>
+                        </div>
+                    </div>
+
+                @empty
+                    <p>No adverts available.</p>
+                @endforelse
 
 
-
-                    <form method="POST" action="{{ route('comments.store') }}" class="d-flex">
-                        @csrf
-                        <input style="width: 70%; margin-left: 2%; margin-right: 4%; margin-top: 1%;" type="text"
-                            placeholder="Comment.." name="comments">
-                        <input type="submit" value="send" class="btn btn-primary">
-
-                    </form>
-
-                    {{-- <div>
-                        @dd($post )
-                    </div> --}}
-                </div>
-            @empty
-                Post tapılmadı
-            @endforelse
+            </div>
 
         </div>
     </div>

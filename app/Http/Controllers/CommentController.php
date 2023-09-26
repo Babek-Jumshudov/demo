@@ -11,11 +11,6 @@ class CommentController extends Controller
     {
         if (Auth::check()) {
             $user = Auth::user();
-            // $post_id = $request->input('post_id');
-
-            // if (!$post_id) {
-            //     return response()->json(['error' => 'post_id eksik.'], 400);
-            // }
             if (!$request->input('comments')) {
                 return response()->json(['error' => 'Comment yoxdur.'], 400);
             }
